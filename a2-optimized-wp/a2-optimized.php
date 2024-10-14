@@ -9,7 +9,7 @@
  * @wordpress-plugin
  * Plugin Name: A2 Optimized WP
  * Plugin URI: https://wordpress.org/plugins/a2-optimized/
- * Version: 3.0.9
+ * Version: 3.0.10
  * Author: A2 Hosting
  * Author URI: https://www.a2hosting.com/
  * Description: Automatically optimizes performance and security. Works together with LiteSpeed Cache.
@@ -24,7 +24,7 @@ if ( ! defined( 'WPINC' ) ) {
 }
 
 define( 'A2OPT_VERSION', '3.0' );
-define( 'A2OPT_FULL_VERSION', '3.0.9' );
+define( 'A2OPT_FULL_VERSION', '3.0.10' );
 define( 'A2OPT_MIN_PHP', '5.6' );
 define( 'A2OPT_MIN_WP', '5.1' );
 define( 'A2OPT_FILE', __FILE__ );
@@ -100,9 +100,15 @@ function run_a2_optimized() {
 	}
 	if (is_admin()) {
 		new A2_Optimized_SiteHealth;
+
+		$benchmarks = new A2_Optimized_Benchmarks;
+		$benchmarks->prune_benchmarks('backend', 10);
+		$benchmarks->prune_benchmarks('frontend', 5);
+
 		if (defined('DISALLOW_FILE_EDIT') && DISALLOW_FILE_EDIT) {
 			add_action('admin_menu', ['A2_Optimized_Optimizations', 'addLockedEditor'], 100, 100);
 		}
+
 		if (in_array('easy-hide-login/wp-hide-login.php', apply_filters('active_plugins', get_option('active_plugins')))) {
 			add_filter( 'admin_email_check_interval', '__return_false' );
 		}
